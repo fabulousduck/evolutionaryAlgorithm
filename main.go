@@ -39,29 +39,16 @@ type algorithm struct {
   candidateSolutions [][]point
 }
 
-type opts struct {
-  points int
-  initCandidateSolutionsCount int
-}
-
 func main() {
-  opts := newOpts(20, 1000)
-  algorithm := opts.newAlorithm()
-  dataPoints := newPointSet(opts.points);
-  algorithm.putRandomCandidateSolutions(dataPoints, opts.initCandidateSolutionsCount)
+  algorithm := newAlorithm()
+  dataPoints := newPointSet(20);
+  algorithm.putRandomCandidateSolutions(dataPoints, 1000)
   fmt.Println(algorithm.candidateSolutions)
 }
 
-func newOpts(points int, icsc int) *opts {
-  return &opts{
-      points,
-      icsc,
-  }
-}
-
-func (opts *opts)newAlorithm() *algorithm {
+func newAlorithm() *algorithm {
   return &algorithm{
-    make([][]point{},opts.initCandidateSolutionsCount),
+    [][]point{},
   }
 }
 
