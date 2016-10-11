@@ -42,8 +42,7 @@ type algorithm struct {
 func main() {
   algorithm := newAlorithm()
   dataPoints := newPointSet(20);
-  algorithm.putRandomCandidateSolutions(dataPoints, 1000)
-  fmt.Println(algorithm.candidateSolutions)
+  algorithm.putRandomCandidateSolutions(dataPoints, 50)
 }
 
 func newAlorithm() *algorithm {
@@ -53,26 +52,32 @@ func newAlorithm() *algorithm {
 }
 
 func (algorithm *algorithm) putRandomCandidateSolutions(dataPoints []point, amount int){
+  dp := dataPoints
   for i := 0; i < amount; i++ {
-    algorithm.candidateSolutions = append(algorithm.candidateSolutions, randomSolution(dataPoints))
+    fmt.Println("randomized : ", randomSolution(dp))
   }
+
 }
 
 func randomSolution(dataPoints []point) []point {
-  candidateSolution := []point{dataPoints[0]}
+  startPoint := dataPoints[0]
+  solution := []point{startPoint}
   dataPoints = append(dataPoints[:0], dataPoints[1:]...)
-  for i := 0; i < len(dataPoints)-2; i++ {
-    candidateSolution = append(candidateSolution, dataPoints[rand.Intn(len(dataPoints))]);
-
+  for i := 0; i < len(dataPoints); i++{
+    randomPos := rand.Intn(len(dataPoints));
+    solution = append(solution, dataPoints[randomPos])
+    dataPoints = append(dataPoints[:randomPos],dataPoints[randomPos:]...)
   }
-  candidateSolution = append(candidateSolution, candidateSolution[0]);
-  return candidateSolution
+  solution = append(solution, startPoint)
+  return solution
 }
 
 func newPointSet(amount int) []point {
   points := []point{}
   for i := 0; i < amount; i++ {
-    points = append(points,point{rand.Intn(100),rand.Intn(100)})
+    point1 := rand.Intn(100)
+    point2 := rand.Intn(100)
+    points = append(points,point{point1,point2})
   }
   return points
 }
