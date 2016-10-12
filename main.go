@@ -28,6 +28,7 @@ package main
 import(
   "fmt"
   "math/rand"
+  "time"
 )
 
 type point struct {
@@ -37,12 +38,13 @@ type point struct {
 
 type algorithm struct {
   candidateSolutions [][]point
+
 }
 
 func main() {
   algorithm := newAlorithm()
-  dataPoints := newPointSet(20);
-  algorithm.putRandomCandidateSolutions(dataPoints, 50)
+  cityPositions := newCities(20);
+  algorithm.putRandomCandidateSolutions(cityPositions, 50)
 }
 
 func newAlorithm() *algorithm {
@@ -51,33 +53,41 @@ func newAlorithm() *algorithm {
   }
 }
 
-func (algorithm *algorithm) putRandomCandidateSolutions(dataPoints []point, amount int){
-  dp := dataPoints
+func (algorithm *algorithm) putRandomCandidateSolutions(cityPositions []point, amount int){
   for i := 0; i < amount; i++ {
-    fmt.Println("randomized : ", randomSolution(dp))
+    algorithm.candidateSolutions = append(algorithm.candidateSolutions, randomSolution(cityPositions))
   }
 
 }
 
-func randomSolution(dataPoints []point) []point {
-  startPoint := dataPoints[0]
-  solution := []point{startPoint}
-  dataPoints = append(dataPoints[:0], dataPoints[1:]...)
-  for i := 0; i < len(dataPoints); i++{
-    randomPos := rand.Intn(len(dataPoints));
-    solution = append(solution, dataPoints[randomPos])
-    dataPoints = append(dataPoints[:randomPos],dataPoints[randomPos:]...)
+func randomSolution(cities []point) []point {
+
+  localCitySliceCopy := make([]point, len(cities))
+  copy(localCitySliceCopy, cities)
+  solution := []point{cp[0]}
+  cities = append(localCitySliceCopy[:0], localCitySliceCopy[1:]...)
+
+  for i := 0; i < len(localCitySliceCopy); i++ {
+    randomPoint := randInt(0, len(localCitySliceCopy))
+    solution = append(solution, localCitySliceCopy[randomPoint])
+    cp = append(localCitySliceCopy[:randomPoint],localCitySliceCopy[randomPoint+1:]...)
   }
-  solution = append(solution, startPoint)
+  solution = append(solution, solution[0])
   return solution
+
 }
 
 func newPointSet(amount int) []point {
   points := []point{}
   for i := 0; i < amount; i++ {
-    point1 := rand.Intn(100)
-    point2 := rand.Intn(100)
+    point1 := randInt(0,100)
+    point2 := randInt(0,100)
     points = append(points,point{point1,point2})
   }
   return points
+}
+
+func randInt(min int, max int) int {
+  rand.Seed(time.Now().UTC().UnixNano())
+  return min + rand.Intn(max-min)
 }
